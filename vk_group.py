@@ -1,6 +1,8 @@
+from tqdm import tqdm
 import requests
 import json
 import os
+import csv
 
 
 class VKGroup:
@@ -53,29 +55,34 @@ class VKGroup:
         # the maximum number of posts per request (VK API limitation)"
         batch_size = 100
 
-        while len(all_posts) < count:
-            params = {
-                'domain': self.group_domain,
-                'count': min(batch_size, count - len(all_posts)),
-                'offset': offset
-            }
+        # Create a progress bar with the total number of posts to fetch
+        with tqdm(total=count, desc="Downloading posts", unit="post") as pbar:
+            while len(all_posts) < count:
+                params = {
+                    'domain': self.group_domain,
+                    'count': min(batch_size, count - len(all_posts)),
+                    'offset': offset
+                }
 
-            data = self._make_request('wall.get', params)
+                data = self._make_request('wall.get', params)
 
-            if 'error' in data:
-                raise Exception(f"Error fetching posts: {
-                                data['error']['error_msg']}")
+                if 'error' in data:
+                    raise Exception(f"Error fetching posts: {
+                                    data['error']['error_msg']}")
 
-            posts = data.get('response', {}).get('items', [])
+                posts = data.get('response', {}).get('items', [])
 
-            if not posts:
-                # If there are no more posts, we exit the loop
-                break
+                if not posts:
+                    # If there are no more posts, we exit the loop
+                    break
 
-            all_posts.extend([(post.get('id'), post.get('text', ''))
-                             for post in posts])
+                all_posts.extend(
+                    [(post.get('id'), post.get('text', '')) for post in posts])
 
-            offset += len(posts)
+                offset += len(posts)
+
+                # Update the progress bar with the number of posts added
+                pbar.update(len(posts))
 
         return all_posts[:count]
 
@@ -107,5 +114,5 @@ if __name__ == "__main__":
     access_token = vk_parse_data_id["access_token"]
     group_domain = vk_parse_data_id["group_domain"]
     vk_group = VKGroup(access_token, group_domain)
-    num_of_post = vk_group.post_count()
-    print(num_of_post)
+    amount_of_post = vk_group.post_count()
+    dataset = vk_group.get_posts(offset=0, count=amount_of_post)
