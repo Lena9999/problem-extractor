@@ -49,7 +49,7 @@ class PostProcessor:
         ) == 0]
 
         removed_posts = original_size - len(self.cleaned_data)
-
+        self.cleaned_data = self.cleaned_data.drop(columns=['links'])
         print(f"Number of posts removed that contained links: {removed_posts}")
         return self.cleaned_data
 
