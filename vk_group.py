@@ -2,7 +2,6 @@ from tqdm import tqdm
 import requests
 import json
 import os
-import csv
 
 
 class VKGroup:
