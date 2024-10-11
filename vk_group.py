@@ -1,7 +1,6 @@
 from tqdm import tqdm
 import requests
-import json
-import os
+from datetime import datetime
 
 
 class VKGroup:
@@ -75,8 +74,15 @@ class VKGroup:
                     # If there are no more posts, we exit the loop
                     break
 
-                all_posts.extend(
-                    [(post.get('id'), post.get('text', '')) for post in posts])
+                all_posts.extend([
+                    (
+                        post.get('id'),
+                        post.get('text', ''),
+                        datetime.fromtimestamp(post.get('date')).strftime(
+                            '%Y-%m-%d %H:%M:%S')
+                    )
+                    for post in posts
+                ])
 
                 offset += len(posts)
 
@@ -102,16 +108,3 @@ class VKGroup:
         total_count = data.get('response', {}).get('count', 0)
 
         return total_count
-
-
-if __name__ == "__main__":
-    current_directory = os.path.dirname(__file__)
-    file_name = "vk_parse_data_id.json"
-    file_path = os.path.join(current_directory, file_name)
-    with open(file_path, 'r') as json_file:
-        vk_parse_data_id = json.load(json_file)
-    access_token = vk_parse_data_id["access_token"]
-    group_domain = vk_parse_data_id["group_domain"]
-    vk_group = VKGroup(access_token, group_domain)
-    amount_of_post = vk_group.post_count()
-    dataset = vk_group.get_posts(offset=0, count=amount_of_post)
