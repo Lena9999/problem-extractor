@@ -1,5 +1,6 @@
 import pandas as pd
 from urlextract import URLExtract
+import emoji
 
 
 class PostProcessor:
@@ -12,6 +13,7 @@ class PostProcessor:
         2. Removing rows containing links within the posts.
         3. Removing duplicate posts.
         4. Filtering posts by their length (minimum and maximum length).
+        5. Removing emojis from posts.
 
         Parameters:
         data (pd.DataFrame): The dataset to preprocess.
@@ -80,16 +82,28 @@ class PostProcessor:
         print(f"Number of posts removed by length filter: {removed_posts}")
         return self.cleaned_data
 
+    def remove_emojis(self):
+        """Removes emojis from the posts."""
+        self.cleaned_data[self.post_column] = self.cleaned_data[self.post_column].apply(
+            self._remove_emojis)
+        print("Emoji removed")
+
+    def _remove_emojis(self, text):
+        """Helper function to remove emojis from a given text."""
+        if isinstance(text, str):  # Check if the text is a string
+            return ''.join(char for char in text if char not in emoji.EMOJI_DATA)
+        return text
+
     def preprocess(self, steps=None):
         """
         steps (list of str): List of preprocessing steps to execute. 
                              Possible values: ['remove_empty_posts', 'remove_posts_with_links', 
-                             'remove_duplicates', 'filter_by_length'].
+                             'remove_duplicates', 'filter_by_length', 'remove_emojis'].
                              If None, all steps will be executed by default.
         """
         if steps is None:
             steps = ['remove_empty_posts', 'remove_posts_with_links',
-                     'remove_duplicates', 'filter_by_length']
+                     'remove_duplicates', 'filter_by_length', 'remove_emojis']
 
         for step in steps:
             if hasattr(self, step):
