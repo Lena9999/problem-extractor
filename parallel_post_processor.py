@@ -45,7 +45,7 @@ class ParallelPostProcessor:
         self.lock = multiprocessing.Lock()
         self.progress_counter = multiprocessing.Value('i', 0)
 
-    def process_and_record_request(self, api_client, post_id, post_text, prompt_template, result_output_file, model="gpt-4", temperature=0.5):
+    def process_and_record_request(self, api_client, post_id, post_text, prompt_template, result_output_file, model="gpt-4o-mini", temperature=0.5):
         """
         Sends a request to the OpenAI API for a post, records the result, 
         and logs errors if the request fails.
@@ -87,7 +87,7 @@ class ParallelPostProcessor:
                 with open(self.failed_file, 'a') as ff:
                     ff.write(error_message)
 
-    def process_dataset_in_parallel(self, dataset, prompt_template, model="gpt-4", temperature=0.5, num_processes=4):
+    def process_dataset_in_parallel(self, dataset, prompt_template, model="gpt-4o-mini", temperature=0.5, num_processes=4):
         """
         Processes the dataset in parallel by splitting it into batches and distributing the work among multiple processes.
         Each process works on a batch of posts and stores the results in separate files for each process. Errors are logged in a shared file.
@@ -97,7 +97,7 @@ class ParallelPostProcessor:
             prompt_template (str): Template for formatting the API request.
                               Example: 
                               "Analyze the following text: '{text}'"
-            model (str, optional): The OpenAI model to use (default: 'gpt-4').
+            model (str, optional): The OpenAI model to use (default: 'gpt-4o-mini').
             temperature (float, optional): The temperature setting for the model (default: 0.5).
             num_processes (int, optional): The number of parallel processes to use (default: 4).
         """
@@ -124,7 +124,7 @@ class ParallelPostProcessor:
         for p in processes:
             p.join()
 
-    def process_batch(self, post_batch, prompt_template, result_output_file, total_posts, model="gpt-4", temperature=0.5, progress_interval=100):
+    def process_batch(self, post_batch, prompt_template, result_output_file, total_posts, model="gpt-4o-mini", temperature=0.5, progress_interval=100):
         """
         Processes a batch of posts in a single process.
 
