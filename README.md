@@ -6,4 +6,3 @@ The project showcases the process of automated analysis of texts from social net
 ├── data_collection/
 │   ├── vk_api_collector.py   # Collects posts from VK using API
 │   └── config.json           # Configuration file with API keys and group IDs
-│
