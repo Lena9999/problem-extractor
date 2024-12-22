@@ -22,7 +22,7 @@ The following sections will provide a detailed overview of the project's structu
 - vk_json_to_csv.py #Performs a full cycle of processing JSON files collected using __vk_scraper.py__ and converts them into CSV format for further analysis. Utilizes methods from post_processing.py to preprocess textual data.
   - post_processing.py #Contains methods for basic text preprocessing, including removing empty posts, posts with only photos or links, emojis, advertisements, and filtering out overly long or short posts.
 
-### 2. Text Labeling Using GPT API
+### 2. Text Labeling Using GPT API (gpt_text_processor)
 
 #### Functionality:
 - Extracts key problems from long texts and turns them into lists.
