@@ -36,7 +36,7 @@ The following sections will provide a detailed overview of the project's structu
   - parallel_post_processor.py #Enables multiprocessing for data labeling to accelerate processing of large datasets.
      - open_ai.py #Provides a class for interacting with the GPT API to send requests.
 
-### 3. Training a Model Based on ruT5-base
+### 3. Training a Model Based on ruT5-base (seq2seq_training)
 
 After labeling the data, a custom model based on ruT5-base is created to perform the same labeling task.
 
