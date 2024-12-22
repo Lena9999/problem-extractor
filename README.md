@@ -7,7 +7,7 @@ The following sections will provide a detailed overview of the project's structu
 
 ## Project Structure
 
-### 1. Data Collection Using VK API 
+### 1. Data Collection Using VK API (api_post_collector)
 
 #### Functionality:
 
