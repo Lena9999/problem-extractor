@@ -22,8 +22,6 @@ class ParallelPostProcessor:
         results_dir (str): The directory where the results will be saved.
         failed_file (str): The path to the file for logging failed requests.
         success_dir (str): The directory where successful results are stored.
-        lock (multiprocessing.Lock): A lock to ensure safe concurrent access to shared resources (like the error log).
-        progress_counter (multiprocessing.Value): A shared counter to track progress across multiple processes.
     """
 
     def __init__(self, api_key, organization, results_dir="post_processing_results"):
