@@ -12,15 +12,6 @@ class TextGenerationMetrics:
 
         This class provides methods to compute metrics such as BLEU, ROUGE, METEOR, precision, recall, F1, perplexity, and repetition rate.
 
-        Methods:
-            - calculate_bleu_scores(df, target_column, generated_column): Calculates BLEU scores for the dataset using sentence-level BLEU.
-            - calculate_precision_recall_f1(df, target_column, generated_column): Computes precision, recall, and F1 scores based on token overlaps between reference and generated texts.
-            - calculate_rouge_scores(df, target_column, generated_column): Calculates ROUGE-2 and ROUGE-L scores for the dataset.
-            - calculate_meteor_scores(df, target_column, generated_column): Computes METEOR scores for the dataset.
-            - calculate_perplexity(df, generated_column): Estimates the perplexity of the generated texts as a measure of text fluency.
-            - calculate_repetition_rate(df, generated_column): Computes the repetition rate for generated texts, indicating how often tokens are repeated.
-            - calculate_all_metrics(df, target_column, generated_column): Aggregates all metrics and computes their average values over the dataset.
-
         Parameters:
             df (pd.DataFrame): A pandas DataFrame containing reference texts and generated texts.
             target_column (str): The name of the column containing the reference (true) texts.
