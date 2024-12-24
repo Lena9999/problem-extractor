@@ -1,9 +1,9 @@
 # Analysis of User Complaints and Problems Extracted from Social Media Posts Using NLP and Machine Learning
 ## Project Description:
 
-The project showcases the process of automated analysis of texts from social networks, including data collection, processing, annotation, model training, and clustering. The tools and approaches used can be adapted and reused for working with texts from various sources. The project code offers flexibility for customization to specific tasks, such as data collection, text processing, interaction with the GPT API, and training custom models.
+The project demonstrates the process of automated analysis of texts from social networks, including data collection, processing, annotation, model training, and clustering. The tools and approaches used can be adapted and reused for working with texts from various sources. The project code offers flexibility for customization to specific tasks, such as data collection, text processing, interaction with the GPT API, and training custom models.
 
-The following sections will provide a detailed overview of the project's structure, including its main components and a brief description of the associated files. Each component includes not only the scripts required for execution but also a Jupyter Notebook file. These notebooks provide a detailed walkthrough with comments on how the created files and modules were utilized and executed, ensuring clarity and ease of replication.
+The following sections will provide a detailed overview of the project's structure, including its main components and a brief description of the associated files. Each component includes not only the scripts required for execution but also a Jupyter Notebook file. These notebooks provide a detailed guide with comments on how the created files and modules were utilized and executed, providing clarity and ease of replication.
 
 ## Project Structure
 
@@ -13,7 +13,7 @@ The following sections will provide a detailed overview of the project's structu
 
 - Collecting posts from specified VK groups where users share their problems.
 - Adaptable for other platforms that support APIs (e.g., Telegram, Twitter).
-- Conveniently extendable for various user content collection tasks.
+- Easily extendable for various user content collection tasks.
 
 #### Files
 - vk_scraper.ipynb 
@@ -26,7 +26,7 @@ The following sections will provide a detailed overview of the project's structu
 
 #### Functionality:
 - Extracts key problems from long texts and turns them into lists.
-- Allows customization of API queries for different tasks.
+- Lets you modify API requests for different tasks.
 - Suitable for classification, summarization, translation, and text correction.
 
 #### Files
