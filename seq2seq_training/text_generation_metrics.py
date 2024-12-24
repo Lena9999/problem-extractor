@@ -8,10 +8,9 @@ import math
 class TextGenerationMetrics:
     def __init__(self):
         """
-        A class for calculating various evaluation metrics to assess the quality of generated texts compared to reference texts. 
+        A class for calculating various evaluation metrics to assess the quality of generated texts compared to reference texts.
 
         This class provides methods to compute metrics such as BLEU, ROUGE, METEOR, precision, recall, F1, perplexity, and repetition rate.
-
         Parameters:
             df (pd.DataFrame): A pandas DataFrame containing reference texts and generated texts.
             target_column (str): The name of the column containing the reference (true) texts.
@@ -26,8 +25,9 @@ class TextGenerationMetrics:
         for target, generated in zip(df[target_column], df[generated_column]):
             reference = [target.split()]
             hypothesis = generated.split()
-            score = sentence_bleu(reference, hypothesis,
-                                  smoothing_function=smoothing_function)
+            score = sentence_bleu(
+                reference, hypothesis, smoothing_function=smoothing_function
+            )
             bleu_scores.append(score)
         return bleu_scores
 
@@ -43,14 +43,21 @@ class TextGenerationMetrics:
             false_positive = len(generated_labels - target_labels)
             false_negative = len(target_labels - generated_labels)
 
-            precision = true_positive / \
-                (true_positive + false_positive) if true_positive + \
-                false_positive > 0 else 0
-            recall = true_positive / \
-                (true_positive + false_negative) if true_positive + \
-                false_negative > 0 else 0
-            f1 = 2 * (precision * recall) / (precision +
-                                             recall) if precision + recall > 0 else 0
+            precision = (
+                true_positive / (true_positive + false_positive)
+                if true_positive + false_positive > 0
+                else 0
+            )
+            recall = (
+                true_positive / (true_positive + false_negative)
+                if true_positive + false_negative > 0
+                else 0
+            )
+            f1 = (
+                2 * (precision * recall) / (precision + recall)
+                if precision + recall > 0
+                else 0
+            )
 
             precision_scores.append(precision)
             recall_scores.append(recall)
@@ -83,8 +90,10 @@ class TextGenerationMetrics:
             log_probability = 0
             for token in tokens:
                 log_probability += math.log(1 / len(tokens))
-            perplexity = math.exp(-log_probability /
-                                  len(tokens)) if tokens else float('inf')
+            perplexity = (
+                math.exp(-log_probability / len(tokens)
+                         ) if tokens else float("inf")
+            )
             perplexities.append(perplexity)
         return perplexities
 
@@ -104,11 +113,14 @@ class TextGenerationMetrics:
         bleu_scores = self.calculate_bleu_scores(
             df, target_column, generated_column)
         precision_scores, recall_scores, f1_scores = self.calculate_precision_recall_f1(
-            df, target_column, generated_column)
+            df, target_column, generated_column
+        )
         rouge_2_scores, rouge_l_scores = self.calculate_rouge_scores(
-            df, target_column, generated_column)
+            df, target_column, generated_column
+        )
         meteor_scores = self.calculate_meteor_scores(
-            df, target_column, generated_column)
+            df, target_column, generated_column
+        )
         perplexities = self.calculate_perplexity(df, generated_column)
         repetition_rates = self.calculate_repetition_rate(df, generated_column)
 
