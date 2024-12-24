@@ -58,20 +58,9 @@ class ParallelPostProcessor:
         """
         Sends a request to the OpenAI API for a post, records the result,
         and logs errors if the request fails.
-
-        Args:
-            api_client (OpenAIClient): An instance of the OpenAI API client to send requests.
-            post_id (str or int): The ID of the post to be processed.
-            post_id (str or int): The ID of the post.
-            post_text (str): The text of the post.
-            prompt_template (str): Template for formatting the API request.
-                              Example:
-                              "Analyze the following text: '{text}'"
-            result_output_file (str): Path to the file for successful results.
         """
 
         try:
-            # a prompt is being formed
             prompt_temp = prompt_template.format(text=post_text)
 
             result = api_client.send_chat_request(
@@ -87,7 +76,6 @@ class ParallelPostProcessor:
                 f.write(f"{post_id}; {problems}; {gender}; {age}\n")
 
         except Exception as e:
-            # If an error occurs, write the request to the error file
             error_message = f"Error: {str(e)}, id: {post_id}, Model: {
                 model}, Temperature: {temperature}\n"
             with self.lock:
@@ -103,9 +91,6 @@ class ParallelPostProcessor:
         num_processes=4,
     ):
         """
-        Processes the dataset in parallel by splitting it into batches and distributing the work among multiple processes.
-        Each process works on a batch of posts and stores the results in separate files for each process. Errors are logged in a shared file.
-
         Args:
             dataset (pd.DataFrame): The dataset containing posts with 'id' and 'posts' columns.
             prompt_template (str): Template for formatting the API request.
@@ -117,17 +102,14 @@ class ParallelPostProcessor:
         """
         total_posts = len(dataset)
 
-        # splitting data into batches
         post_batches = np.array_split(dataset, num_processes)
 
         processes = []
         for i, post_batch in enumerate(post_batches):
-            # a file is generated for successful requests for each of the processes
             result_output_file = os.path.join(
                 self.success_dir, f"successful_requests_process_{i}.txt"
             )
 
-            # processing each batch
             p = multiprocessing.Process(
                 target=self.process_batch,
                 args=(
@@ -155,17 +137,6 @@ class ParallelPostProcessor:
         temperature=0.5,
         progress_interval=100,
     ):
-        """
-        Processes a batch of posts in a single process.
-
-        Args:
-            post_batch (pd.DataFrame): A subset of the dataset containing posts with 'id' and 'posts' columns.
-            prompt_template (str): Template for formatting the API request.
-                              Example: "Analyze the following text: '{text}'".
-            result_output_file (str): Path to the file where successful results for this batch will be recorded.
-            total_posts (int): Total number of posts in the dataset (used for progress tracking).
-            progress_interval (int, optional): The number of posts after which progress will be printed (default: 100).
-        """
         open_ai_client = OpenAIClient(
             api_key=self.api_key, organization=self.organization
         )
@@ -203,8 +174,6 @@ class ParallelPostProcessor:
         result_dict,
     ):
         """
-        Processes all texts in a cluster as a single request and stores results in the shared dictionary.
-
         Args:
             data (pd.DataFrame): The dataset containing posts with "problems" column.
             cluster_column (str): Name of the column containing cluster labels.
@@ -243,21 +212,6 @@ class ParallelPostProcessor:
         model="gpt-4o-mini",
         temperature=0.5,
     ):
-        """
-        Processes clusters in batches with parallel execution for each batch.
-
-        Args:
-            data (pd.DataFrame): The dataset containing posts with "problems" column.
-            cluster_column (str): Name of the column containing cluster labels.
-            prompt_template (str): Template for formatting the API request.
-            batch_size (int): Number of clusters to process in one batch.
-            model (str): The OpenAI model to use (default: 'gpt-4o-mini').
-            temperature (float): The temperature setting for the model (default: 0.5).
-
-        Returns:
-            dict: A dictionary where each key is a cluster label and each value is the GPT response for the combined text of that cluster.
-                  Includes an "error" key to track clusters that failed to process.
-        """
         clusters = data[cluster_column].unique()
         cluster_batches = np.array_split(
             clusters, np.ceil(len(clusters) / batch_size))

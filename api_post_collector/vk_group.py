@@ -39,12 +39,10 @@ class VKGroup:
         try:
             # Make a simple request to the API (for example, users.get)
             response = self._make_request('users.get', {})
-            # If there is an error, return the error message
             if 'error' in response:
                 return response['error']['error_msg']
-            return None  # Token is valid
+            return None
         except requests.RequestException as e:
-            # Handle network errors if needed
             return f"Network error: {e}"
 
     def get_posts(self, count=1, offset=0):
@@ -71,7 +69,6 @@ class VKGroup:
                 posts = data.get('response', {}).get('items', [])
 
                 if not posts:
-                    # If there are no more posts, we exit the loop
                     break
 
                 all_posts.extend([
@@ -86,7 +83,6 @@ class VKGroup:
 
                 offset += len(posts)
 
-                # Update the progress bar with the number of posts added
                 pbar.update(len(posts))
 
         return all_posts[:count]
@@ -95,7 +91,7 @@ class VKGroup:
         """Returns the total number of posts in the group."""
         params = {
             'domain': self.group_domain,
-            'count': 1  # Request only one post to find out the total number of posts
+            'count': 1
         }
 
         data = self._make_request('wall.get', params)
@@ -104,7 +100,6 @@ class VKGroup:
             raise Exception(f"Error fetching total posts count: {
                             data['error']['error_msg']}")
 
-        # Get the total number of posts from the response
         total_count = data.get('response', {}).get('count', 0)
 
         return total_count

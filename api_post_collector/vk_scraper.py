@@ -6,7 +6,6 @@ from vk_group import VKGroup
 def main(access_token, group_domain, output_file, post_count):
     vk_group = VKGroup(access_token, group_domain)
 
-    # Fetch the specified number of posts
     dataset = vk_group.get_posts(offset=0, count=post_count)
 
     with open(output_file, 'w', encoding='utf-8') as json_file:

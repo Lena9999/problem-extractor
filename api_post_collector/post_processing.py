@@ -20,7 +20,7 @@ class PostProcessor:
         post_column (str): The name of the column that contains post texts. Defaults to 'posts'.
         """
         self.data = data
-        self.extractor = URLExtract()  # Initialize object for URL extraction
+        self.extractor = URLExtract()
 
         if post_column not in data.columns:
             raise ValueError(
@@ -32,7 +32,6 @@ class PostProcessor:
         self.cleaned_data = None
 
     def remove_empty_posts(self):
-        """Removes rows with empty posts."""
         original_size = len(self.data)
         self.cleaned_data = self.data.dropna(subset=[self.post_column]).copy()
         cleaned_size = len(self.cleaned_data)
@@ -41,12 +40,10 @@ class PostProcessor:
         return self.cleaned_data
 
     def remove_posts_with_links(self):
-        """Removes posts containing at least one link."""
         original_size = len(self.cleaned_data)
         self.cleaned_data['links'] = self.cleaned_data[self.post_column].apply(
             self.extractor.find_urls)
 
-        # Keep only posts without links
         self.cleaned_data = self.cleaned_data[self.cleaned_data['links'].str.len(
         ) == 0]
 
@@ -56,9 +53,7 @@ class PostProcessor:
         return self.cleaned_data
 
     def remove_duplicates(self):
-        """Removes duplicate posts."""
         original_size = len(self.cleaned_data)
-        # Remove duplicates, keeping only the first occurrence
         self.cleaned_data = self.cleaned_data.drop_duplicates(
             subset=self.post_column, keep='first')
         removed_duplicates = original_size - len(self.cleaned_data)
@@ -66,12 +61,9 @@ class PostProcessor:
         return self.cleaned_data
 
     def filter_by_length(self):
-        """Filters posts by their length (min_length and max_length)."""
         original_size = len(self.cleaned_data)
-        # Add a column that contains the length of each post
         self.cleaned_data['post_length'] = self.cleaned_data[self.post_column].apply(
             len)
-        # Filter posts based on the specified minimum and maximum length
         self.cleaned_data = self.cleaned_data[
             (self.cleaned_data['post_length'] >= self.min_length) &
             (self.cleaned_data['post_length'] <= self.max_length)
@@ -83,14 +75,13 @@ class PostProcessor:
         return self.cleaned_data
 
     def remove_emojis(self):
-        """Removes emojis from the posts."""
         self.cleaned_data[self.post_column] = self.cleaned_data[self.post_column].apply(
             self._remove_emojis)
         print("Emoji removed")
 
     def _remove_emojis(self, text):
         """Helper function to remove emojis from a given text."""
-        if isinstance(text, str):  # Check if the text is a string
+        if isinstance(text, str):
             return ''.join(char for char in text if char not in emoji.EMOJI_DATA)
         return text
 
@@ -108,7 +99,7 @@ class PostProcessor:
         for step in steps:
             if hasattr(self, step):
                 method = getattr(self, step)
-                method()  # Execute the method
+                method()
             else:
                 print(f"Warning: Step '{
                       step}' does not exist in the PostProcessor.")
